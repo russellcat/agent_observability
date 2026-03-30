@@ -1,4 +1,11 @@
-from .tracing import configure_tracing, span
-from .jsonl import JsonlWriter
+from .events import SCHEMA_VERSION, TelemetryEvent
+from .tracing import configure_tracing, emit_event, run_context, span
 
-__all__ = ["configure_tracing", "span", "JsonlWriter"]
+__all__ = [
+    "SCHEMA_VERSION",
+    "TelemetryEvent",
+    "configure_tracing",
+    "emit_event",
+    "run_context",
+    "span",
+]

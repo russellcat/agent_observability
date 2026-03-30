@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import time
 from collections.abc import Callable
 from typing import Any
 
-from agent_observability.tracing import span
+from agent_observability.tracing import emit_event, span
 
 
 def traced_llm_call(
@@ -30,11 +29,8 @@ def traced_llm_call(
     if extra_attrs:
         attrs.update(extra_attrs)
 
-    start = time.perf_counter()
-    with span("llm.call", **attrs):
+    with span("llm.call", event_type="llm", **attrs):
         response = request_fn()
-
-    duration_ms = int((time.perf_counter() - start) * 1000)
 
     usage = None
     if hasattr(response, "usage"):
@@ -42,7 +38,7 @@ def traced_llm_call(
     elif isinstance(response, dict):
         usage = response.get("usage")
 
-    result_attrs: dict[str, object] = {"duration_ms": duration_ms}
+    result_attrs: dict[str, object] = {}
 
     if usage is not None:
         if hasattr(usage, "prompt_tokens"):
@@ -60,7 +56,10 @@ def traced_llm_call(
         elif isinstance(usage, dict) and "total_tokens" in usage:
             result_attrs["total_tokens"] = usage["total_tokens"]
 
-    with span("llm.result", **result_attrs):
-        pass
+    emit_event(
+        "llm.result",
+        event_type="llm.result",
+        attributes=result_attrs,
+    )
 
     return response

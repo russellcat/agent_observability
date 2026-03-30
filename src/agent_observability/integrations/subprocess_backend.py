@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import subprocess
-import time
 from pathlib import Path
 
-from agent_observability.tracing import span
+from agent_observability.tracing import emit_event, span
 
 
 def run_command(
@@ -12,9 +11,9 @@ def run_command(
     cwd: str | Path | None = None,
     timeout: int = 600,
 ) -> subprocess.CompletedProcess[str]:
-    start = time.perf_counter()
     with span(
         "tool.call",
+        event_type="tool",
         tool_name="subprocess",
         command=" ".join(cmd),
         cwd=str(cwd) if cwd else "",
@@ -29,15 +28,15 @@ def run_command(
             check=False,
         )
 
-    duration_ms = int((time.perf_counter() - start) * 1000)
-
-    with span(
+    emit_event(
         "tool.result",
-        exit_code=result.returncode,
-        duration_ms=duration_ms,
-        stdout_len=len(result.stdout or ""),
-        stderr_len=len(result.stderr or ""),
-    ):
-        pass
+        event_type="tool.result",
+        attributes={
+            "tool_name": "subprocess",
+            "exit_code": result.returncode,
+            "stdout_len": len(result.stdout or ""),
+            "stderr_len": len(result.stderr or ""),
+        },
+    )
 
     return result

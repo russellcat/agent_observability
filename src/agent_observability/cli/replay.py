@@ -4,6 +4,8 @@ import json
 import sys
 from pathlib import Path
 
+from agent_observability.events import TelemetryEvent
+
 
 def main() -> int:
     if len(sys.argv) != 2:
@@ -15,8 +17,17 @@ def main() -> int:
         print(f"file not found: {path}")
         return 1
 
-    for line in path.read_text(encoding="utf-8").splitlines():
-        print(json.dumps(json.loads(line), indent=2))
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+
+        try:
+            payload = json.loads(line)
+            event = TelemetryEvent.model_validate(payload)
+            print(json.dumps(event.to_dict(), indent=2, ensure_ascii=False))
+        except Exception as exc:
+            print(f"invalid event on line {line_number}: {exc}")
+            return 1
 
     return 0
 

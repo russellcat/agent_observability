@@ -1,0 +1,14 @@
+{"kind": "span_start", "name": "benchmark.run", "attributes": {"run_id": "demo-run-001", "backend": "opencode", "model": "openai/gpt-4o-mini"}}
+{"kind": "span_start", "name": "agent.loop.iteration", "attributes": {"iteration": 1}}
+{"kind": "span_start", "name": "tool.call", "attributes": {"tool_name": "subprocess", "command": "python3 -c print('tool executed')", "cwd": "", "timeout_s": 30}}
+{"kind": "span_end", "name": "tool.call", "status": "ok"}
+{"kind": "span_start", "name": "tool.result", "attributes": {"exit_code": 0, "duration_ms": 13, "stdout_len": 14, "stderr_len": 0}}
+{"kind": "span_end", "name": "tool.result", "status": "ok"}
+{"kind": "span_end", "name": "agent.loop.iteration", "status": "ok"}
+{"kind": "span_end", "name": "benchmark.run", "status": "ok"}
+{"kind": "span_start", "name": "benchmark.run", "ts": "2026-03-30T17:29:18.493682+00:00", "attributes": {"run_id": "demo-run-002", "backend": "opencode", "model": "openai/gpt-4o-mini"}}
+{"kind": "span_start", "name": "llm.call", "ts": "2026-03-30T17:29:18.494915+00:00", "attributes": {"provider": "openai", "model": "openai/gpt-4o-mini", "operation": "chat.completions.create", "agent_name": "planner"}}
+{"kind": "span_end", "name": "llm.call", "ts": "2026-03-30T17:29:18.495071+00:00", "duration_ms": 0, "status": "ok"}
+{"kind": "span_start", "name": "llm.result", "ts": "2026-03-30T17:29:18.495171+00:00", "attributes": {"duration_ms": 0, "prompt_tokens": 42, "completion_tokens": 17, "total_tokens": 59}}
+{"kind": "span_end", "name": "llm.result", "ts": "2026-03-30T17:29:18.495292+00:00", "duration_ms": 0, "status": "ok"}
+{"kind": "span_end", "name": "benchmark.run", "ts": "2026-03-30T17:29:18.495352+00:00", "duration_ms": 1, "status": "ok"}
